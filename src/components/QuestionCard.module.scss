@@ -1,0 +1,35 @@
+.container {
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: #fff;
+  // 鼠标悬停，&标识当前元素
+  &:hover {
+    box-shadow: 0 4px 10px #e8e8e8;
+  }
+}
+.title {
+  display: flex;
+  .left {
+    flex: 1;
+  }
+  .right {
+    flex: 1;
+    text-align: right;
+    font-size: 12px;
+  }
+}
+
+.button-container {
+  display: flex;
+  .left {
+    flex: 1;
+  }
+  .right {
+    flex: 1;
+    text-align: right;
+    .button {
+      background-color: gray;
+    }
+  }
+}
