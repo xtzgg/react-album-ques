@@ -8,40 +8,18 @@ import {
   Space,
   Button,
   message,
+  Spin,
 } from "antd";
 // 公共的css
 import styles from "./common.module.scss";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
+import ListSearch from "../../components/ListSearch";
+import useLoadQuestionListData from "../../hooks/useLoadQuestionListData";
+import ListPage from "../../components/ListPage";
+
 const { confirm } = Modal;
 const { Title } = Typography;
-
-const qList = [
-  {
-    id: 1,
-    title: "问卷1",
-    isPulished: false,
-    isStar: false,
-    answerCount: 5,
-    createTime: "2025-03-01 12:12",
-  },
-  {
-    id: 2,
-    title: "问卷2",
-    isPulished: true,
-    isStar: true,
-    answerCount: 5,
-    createTime: "2025-03-02 12:12",
-  },
-  {
-    id: 3,
-    title: "问卷3",
-    isPulished: false,
-    isStar: false,
-    answerCount: 7,
-    createTime: "2025-03-03 12:12",
-  },
-];
 
 // 表格
 const tableColumns = [
@@ -77,7 +55,12 @@ const tableColumns = [
 
 const Trash: FC = () => {
   // 数据源
-  const [questionList, setQuestionList] = useState(qList);
+  const {
+    loading,
+    error,
+    data = {},
+  } = useLoadQuestionListData({ isDelete: true });
+  const { total = 0, list = [] } = data;
   // 复选记录问卷id,泛型字符串数组
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -94,10 +77,10 @@ const Trash: FC = () => {
         </Button>
       </Space>
       <Table
-        dataSource={questionList}
+        dataSource={list}
         columns={tableColumns}
         pagination={false} // 禁止分页
-        rowKey={(p) => p.id} // rowKey是一个函数，表示用id作为key
+        rowKey={(p: any) => p.id} // rowKey是一个函数，表示用id作为key
         rowSelection={{
           type: "checkbox",
           onChange: (selectRowKeys) => {
@@ -127,13 +110,20 @@ const Trash: FC = () => {
         <div className={styles.left}>
           <Title level={3}>回收站</Title>
         </div>
-        <div className={styles.right}>搜索</div>
+        <div className={styles.right}>
+          <ListSearch />
+        </div>
       </div>
       <div className={styles.content}>
-        {questionList.length === 0 && <Empty description="暂无数据" />}
+        {loading && (
+          <div style={{ textAlign: "center" }}>
+            <Spin />
+          </div>
+        )}
+        {!loading && list.length === 0 && <Empty description="暂无数据" />}
         {/* 具体可参考antd */}
         {
-          questionList.length > 0 && tableElement
+          !loading && list.length > 0 && tableElement
           // (
           //   // 一个tsx只能有一个元素
           //   <Table
@@ -152,7 +142,9 @@ const Trash: FC = () => {
           // )
         }
       </div>
-      <div className={styles.footer}>分页</div>
+      <div className={styles.footer}>
+        <ListPage total={total} />
+      </div>
     </>
   );
 };

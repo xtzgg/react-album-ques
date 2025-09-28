@@ -1,9 +1,11 @@
 import React, { FC } from "react";
+import useGetQuestionData from "../../../hooks/useLoadQuestionData";
 
 const Index: FC = () => {
+  const { data, loading } = useGetQuestionData();
   return (
     <>
-      <p>Index</p>
+      <>{loading ? <p>loading...</p> : <p>{JSON.stringify(data)}</p>}</>
     </>
   );
 };
